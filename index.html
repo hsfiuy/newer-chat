@@ -1,0 +1,73 @@
+<body>
+<center>
+    <h1>a chat apps</h1>
+    <h2 style="color:crimson;">-WARNING-</h2>
+    <h3>This is a global chat. anyone who uses the same plugins as this web's chat will be shown here.</h3>
+</center>
+<br><hr><br>
+<h4>add user here</h4>
+<input type="text" id="nameinput" placeholder="username">
+<button onclick="nameadd()" id="name_button">Add username</button>
+<br>
+<center>
+Enter Chat and press enter
+<div><input id=input placeholder="message" /></div>
+
+Chat Output
+<div id=box></div>
+
+<!-- scripts ans stufpf -->
+<style>
+    body{
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        
+    }
+    #box{
+        display: inline;
+    }
+</style>
+<script type="text/javascript">
+    nametag = "";
+    function nameadd(){
+        nametag = document.getElementById("nameinput").value;
+        document.getElementById("name_button").innerText = "user added";
+        console.log(nametag);
+        alert("nametag added");
+        setTimeout(1000);
+        document.getElementById("name_button").innerHTML = "Add username";
+    }
+  </script>
+<script src=https://cdn.pubnub.com/sdk/javascript/pubnub.4.28.2.min.js></script>
+<script> 
+(function() {
+        var pubnub = new PubNub({
+            publishKey: 'demo',
+            subscribeKey: 'demo'
+        });
+        function $(id) {
+            return document.getElementById(id);
+        }
+        var box = $('box'),
+            input = $('input'),
+            channel = '10chat-demo';
+        pubnub.addListener({
+            message: function(obj) {
+                box.innerHTML = (nametag + ' : ' + obj.message).replace(/[<>]/g, '') + '<br>' + box.innerHTML
+            }
+        });
+        pubnub.subscribe({
+            channels: [channel]
+        });
+        input.addEventListener('keyup', function(e) {
+            if ((e.keyCode || e.charCode) === 13) {
+                pubnub.publish({
+                    channel: channel,
+                    message: input.value,
+                    x: (input.value = '')
+                });
+            }
+        });
+    })();
+</script>
+</center>
+</body>
